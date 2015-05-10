@@ -1,0 +1,38 @@
+<div class="container">
+  <h3>Bitcoin Payment Instructions</h3>
+  <hr>
+  <div class="row">
+    <div class="col-sm-6 col-sm-offset-1 text-center">
+      <h4>Send exactly <%= Spree::Money.new(amount_expected, currency: "BTC") %> bitcoins</h4>
+      to
+      <h4><%= address %></h4>
+      <br>
+      <h5>
+        Your order will be confirmed instantly once your payment is received.<br>
+        We'll keep watching for transactions and update this page as they come in.
+      </h5>
+      <em>Note: If you need help with bitcoin, <%= link_to "check the FAQ", static_url(path: "frequently-asked-questions") %>.</em>
+    </div>
+    <%= link_to bitcoin_uri(address, amount_expected) do %>
+      <div class="col-sm-3 text-center well" id="qrcode"></div>
+    <% end %>
+  </div>
+  <div class="text-center well">
+    <a class="btn btn-default <%= 'disabled' if amount_received > 0.0 %>"
+      href="<%= cancel_url %>">
+      Cancel Payment
+    </a>
+    <a class="btn btn-primary disabled" href="<%= spree.order_path(current_order) %>">
+      Waiting for <%= Spree::Money.new(amount_expected, currency: "BTC") %> BTC... (<%= Spree::Money.new(amount_received, currency: "BTC") %> received)
+    </a>
+  </div>
+</div>
+<script type="text/javascript">
+  qrCode = new QRCode(document.getElementById("qrcode"), {
+    colorLight: "transparent",
+    text: "<%= bitcoin_uri(address, amount_expected) %>",
+    height: 180,
+    width: 180
+  });
+  setTimeout(function(){this.location.reload()}, 7500);
+</script>

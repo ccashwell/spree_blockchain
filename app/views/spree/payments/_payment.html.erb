@@ -1,0 +1,6 @@
+<span>
+  <%= payment.payment_method.name %>
+  <span class="label label-<%= payment.completed? ? 'success' : 'default' %>">
+    <%= Spree.t(payment.state.to_sym) %>
+  </span>
+</span>
