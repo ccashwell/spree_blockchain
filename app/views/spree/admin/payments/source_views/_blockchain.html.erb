@@ -1,4 +1,7 @@
 <p>
-	Unique Receiving Address: <%= @payment.source.receiving_address  %><br>
+	Unique Receiving Address: <%= @payment.source.receiving_address  %>
+	<br>
+	Amount Expected (in Bitcoins): <%= @payment.source.amount_in_btc %>
+	<br>
 	Amount Received (in Bitcoins): <%= @payment.source.amount_received %>
 </p>
