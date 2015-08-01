@@ -41,7 +41,7 @@ class Spree::BlockchainController < Spree::BaseController
 	end
 
 	def cancel
-    payment = bitcoin_payments.processing.take
+    payment = bitcoin_payments.processing.last
     notice = Spree.t(:spree_blockchain_cancel_error)
 
     if payment.present? && payment.amount == 0.0
@@ -124,7 +124,7 @@ class Spree::BlockchainController < Spree::BaseController
     report_error! order, Spree.t(:spree_blockchain_unavailable)
   end
 
-  def verify_payment! payment = bitcoin_payments.take
+  def verify_payment! payment = bitcoin_payments.last
     # find the order and transaction
     order, transaction = payment.order, payment.source
     payment.started_processing! if payment.void?
