@@ -5,7 +5,7 @@ en:
     pending: "pending"
     processing: "unpaid"
     spree_blockchain_cancel_error: "Payment could not be canceled."
-    spree_blockchain_checkout_cancelled: "Payment canceled."
+    spree_blockchain_checkout_cancelled: "Your transaction has been canceled."
     spree_blockchain_checkout_error: "There was an error while checking out. Please use a different payment method."
     spree_blockchain_unavailable: "The bitcoin service is down. Try again later."
     void: "voided"

@@ -49,7 +49,9 @@ class Spree::BlockchainController < Spree::BaseController
       notice = Spree.t(:spree_blockchain_checkout_cancelled)
     end
 
-    redirect_to checkout_state_path(:payment), notice: notice
+    current_order.empty! and session.delete(:order_id)
+
+    redirect_to root_url, notice: notice
 	end
 
 	def success
@@ -103,6 +105,7 @@ class Spree::BlockchainController < Spree::BaseController
     transaction = Spree::BlockchainTransaction.new(
       amount_in_btc: total_in_btc,
       amount_received: 0.0,
+      order_total: order.total,
       order_id: order.number,
       receiving_address: receiver.input_address,
       secret_token: secret_token
@@ -127,7 +130,14 @@ class Spree::BlockchainController < Spree::BaseController
   def verify_payment! payment = bitcoin_payments.last
     # find the order and transaction
     order, transaction = payment.order, payment.source
+
     payment.started_processing! if payment.void?
+    if transaction.order_total != order.total
+      transaction.update_attributes!(
+        amount_in_btc: total_in_btc,
+        order_total: order.total
+      )
+    end
 
     # update the transaction to reflect amounts received in bitcoin
     amount_received = received_funds(transaction.receiving_address)
@@ -135,7 +145,7 @@ class Spree::BlockchainController < Spree::BaseController
 
     # update the payment to reflect USD equivalent of amounts received
     payment.update_attributes!(
-      amount: order.total * (amount_received / transaction.amount_in_btc)
+      amount: transaction.order_total * (amount_received / transaction.amount_in_btc)
     )
 
     payment.complete! if transaction.satisfied?
